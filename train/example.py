@@ -362,39 +362,42 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = html.Div(
     children=[
 
-        html.H1('PPP statistics'),
+        dbc.Row (html.H1('PPP statistics')),
 
+        dbc.Row([
+            dbc.Col(
+                dcc.Tabs(
+                    id="tab",
+                    value="Mich",
+                    children=[
+                        dcc.Tab(label="Michailovskoe", value="Mich",style=tab_style, selected_style=tab_selected_style),
+                        dcc.Tab(label="Barnaul", value="Barn",style=tab_style, selected_style=tab_selected_style),
+                    ],
+                    # colors ={
+                    #                             "border": "white",
+                    #                             "primary": "gold",
+                    #                             "background": "grey"}
+                ),width={'size':3}),
 
-        dcc.Tabs(
-            id="tab",
-            value="Mich",
-            children=[
-                dcc.Tab(label="Michailovskoe", value="Mich",style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label="Barnaul", value="Barn",style=tab_style, selected_style=tab_selected_style),
-            ],
-            # colors ={
-            #                             "border": "white",
-            #                             "primary": "gold",
-            #                             "background": "grey"}
-        ),
+            dbc.Col([
+                html.P('''Выберите даты''',style={'text-align':'center','margin-bottom':0}),
+                 html.Div(
+                     dcc.DatePickerRange(
+                         id="date-range",
+                         min_date_allowed=min(df["Date"]),
+                         max_date_allowed=max(df["Date"]),
+                         end_date=max(pd.to_datetime(df["Date"],format='%d.%m.%Y')),
+                         start_date=min(pd.to_datetime(df["Date"],format='%d.%m.%Y')),
+                         display_format='DD/MM/YYYY',
+                         # clearable=True,
+                        reopen_calendar_on_clear=True,
+                        updatemode='bothdates',
 
-
-        html.P('''Выберите даты'''),
-         html.Div(
-             dcc.DatePickerRange(
-                 id="date-range",
-                 min_date_allowed=min(df["Date"]),
-                 max_date_allowed=max(df["Date"]),
-                 end_date=max(pd.to_datetime(df["Date"],format='%d.%m.%Y')),
-                 start_date=min(pd.to_datetime(df["Date"],format='%d.%m.%Y')),
-                 display_format='DD/MM/YYYY',
-                 # clearable=True,
-                reopen_calendar_on_clear=True,
-                updatemode='bothdates',
-                 # persistence=True
-             )
-        ),
-        html.Button('Reset Date', id='reset-date', n_clicks=0),
+                         # persistence=True
+                     )
+                )],width={'size':2}, align='center'),
+            dbc.Col(
+                html.Button('Reset Date', id='reset-date', n_clicks=0),width={'size':1}, align='left', ),
         # html.P('Choose PVT player'),
         # dcc.Dropdown(
         #     id="players-select",
@@ -423,7 +426,8 @@ app.layout = html.Div(
         #                 value=["Mich", "Barn"],
         #                 inline=True,
         #             ),
-
+        ],
+        align="center",style={'margin-bottom':'20px'}),
         dbc.Col(
         dbc.Alert(
             "No data found for this range",
